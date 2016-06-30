@@ -1,0 +1,66 @@
+<project name="uebung10_hoeneklk15" default="jar">
+
+	<property name="target.classes" value="${target}/classes" />
+	
+	<property name="src.java" value="${basedir}/src" />
+	<property name="src.junit" value="${basedir}/test" />
+
+	<!-- libs -->
+	<property name="libs" value="${basedir}/libs" />
+
+	<property name="target" value="${basedir}/build" />
+	<property name="target.java" value="${target}/java" />
+	<property name="target.junit" value="${target}/junit" />
+	<property name="target.testreports" value="${target}/testreports" />
+	<property name="target.jar" value="${target}/jar" />
+
+
+	<!-- externe libs  -->
+	<path id="externalLibs">
+		<pathelement location="${libs}/junit-4.10.jar" />
+	</path>
+
+	<!-- clean --> 
+	<target name="clean">
+		<delete dir="build" />
+	</target>
+
+	<!--prepare -->
+	<target name="prepare" description="Bereitet die Ordnerstruktur für die Kompilieren Klasse und das Dokument vor">
+		<mkdir dir="${target.java}" />
+		<mkdir dir="${target.junit}" />
+		<mkdir dir="${target.jar}" />
+	</target>
+
+	<!-- compile -->
+	<target name="compile" depends="prepare" description="Kompiliert Java Code">
+		<javac srcdir="${src.java}" destdir="${target.java}" includeantruntime="false" />
+		<javac srcdir="${src.junit}" destdir="${target.junit}" debug="true" includeantruntime="false" classpath="c:/eclipse/plugins/org.apache.ant_1.8.3.v20120321-1730/lib/junit.jar">
+			<classpath>
+				<pathelement location="${target.java}" />
+				<path refid="externalLibs" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile" description="Erstellt eine jar Datei">
+		<mkdir dir="build/jar" />
+		<jar destfile="build/jar/Point2d.jar">
+			<manifest>
+						<attribute name="Main-Class" value="at.fhj.itm.Point2dMain" />
+			</manifest>
+			<fileset dir="${target.java}">
+				<include name="**/*.class" />
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- run -->
+	<target name="run" depends="jar">
+		<echo message="is running" />
+		<java jar="build/jar/Point2d.jar" output="result.txt" fork="true">
+			<arg value="getX" />
+		</java>
+	</target>
+
+</project>
